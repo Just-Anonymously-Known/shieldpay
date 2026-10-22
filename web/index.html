@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ShieldPay · Merchant</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="brand"><span class="dot"></span><h1>ShieldPay</h1><p class="sub">Private Zcash checkout &amp; unlinkable vouchers</p></header>
+
+  <section id="login" class="card">
+    <h2>Merchant key</h2>
+    <p class="hint">Stored only in this tab (session), never in a cookie.</p>
+    <input id="key" type="password" autocomplete="off" placeholder="Admin key">
+    <button id="loginBtn" class="primary">Unlock</button>
+    <p id="loginErr" class="err" role="alert"></p>
+  </section>
+
+  <section id="app" class="hidden">
+    <div class="card">
+      <div class="tabs"><button id="tabPay" class="tab on">Payment</button><button id="tabVou" class="tab">Vouchers</button></div>
+      <div id="payForm">
+        <label>Amount (ZEC)<input id="amount" inputmode="decimal" placeholder="0.05"></label>
+        <label>For (optional)<input id="label" maxlength="80" placeholder="2x jollof rice"></label>
+      </div>
+      <div id="vouForm" class="hidden">
+        <label>How many <span id="vname">vouchers</span>?<input id="qty" inputmode="numeric" value="1"></label>
+        <p class="hint" id="vtotal"></p>
+      </div>
+      <button id="create" class="primary">Create request</button>
+      <p id="createErr" class="err" role="alert"></p>
+    </div>
+
+    <div class="card">
+      <h2>Redeem a voucher</h2>
+      <textarea id="token" rows="2" placeholder="Paste voucher code (SPV1.…)"></textarea>
+      <div class="o-actions"><button id="redeem" class="primary">Redeem</button><button id="scan" class="hidden">Scan QR</button></div>
+      <video id="cam" class="hidden" playsinline muted></video>
+      <p id="redeemMsg" role="status" class="msg"></p>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2>Recent orders</h2><button id="refresh" class="ghost">Refresh</button></div>
+      <ul id="orders" class="orders"></ul>
+      <p id="empty" class="hint hidden">No orders yet.</p>
+    </div>
+    <p class="hint center">Check your wallet for the incoming payment and its memo (the order ref), then tap <b>Mark paid</b>.</p>
+  </section>
+</main>
+<script src="/app.js"></script>
+</body>
+</html>

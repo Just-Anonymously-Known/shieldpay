@@ -1,0 +1,11 @@
+{
+  "framework": null,
+  "buildCommand": "",
+  "outputDirectory": "static",
+  "functions": {
+    "api/index.js": { "includeFiles": "{web,lib}/**", "maxDuration": 30 }
+  },
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index?__p=/$1" }
+  ]
+}

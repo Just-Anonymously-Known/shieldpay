@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>My vouchers</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="brand"><span class="dot"></span><h1>My vouchers</h1><p class="sub" id="merchant"></p></header>
+  <section class="card">
+    <p class="hint" id="privacy">Your vouchers are stored only in this browser. Nobody, including the shop, can look them up or tie them to your payment. <b>If you clear this browser's data without a backup, they are gone.</b></p>
+    <p class="hint" id="anon"></p>
+  </section>
+  <section id="shown" class="card center hidden">
+    <div id="qr" class="qr"></div>
+    <p class="hint">Show this to the shop. Each code works once.</p>
+    <textarea id="tokenText" rows="3" readonly></textarea>
+    <button id="copyTok" class="ghost">Copy code</button>
+    <button id="hide" class="ghost">Close</button>
+  </section>
+  <section class="card">
+    <h2>Vouchers</h2>
+    <ul id="list" class="orders"></ul>
+    <p id="empty" class="hint hidden">No vouchers on this device yet.</p>
+  </section>
+  <section class="card">
+    <h2>Backup</h2>
+    <button id="export">Download backup file</button>
+    <textarea id="importBox" rows="3" placeholder="Paste backup contents to restore"></textarea>
+    <button id="import">Restore from backup</button>
+    <p id="backupMsg" class="hint" role="status"></p>
+  </section>
+</main>
+<script src="/qr.js"></script>
+<script src="/store.js"></script>
+<script src="/wallet.js"></script>
+</body>
+</html>

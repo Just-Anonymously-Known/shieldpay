@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Try ShieldPay</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="brand"><span class="dot"></span><h1>ShieldPay</h1><p class="sub" id="merchant"></p></header>
+
+  <section class="card">
+    <h2>Live demo</h2>
+    <p class="hint"><b>This is a demo on Zcash testnet.</b> No real money moves. The payment QR is real, but confirming it is simulated with one button, so you can walk through the privacy feature without a wallet. Everything after that (blind signing, wallet, redeeming, double-spend refusal) is the real code.</p>
+  </section>
+
+  <section class="card">
+    <h2>1. Buy vouchers</h2>
+    <p class="hint">Your browser makes secret codes and hides them before the shop signs them. The shop never sees them.</p>
+    <label>How many? <input id="qty" type="number" inputmode="numeric" min="1" max="5" value="2"></label>
+    <button id="buy" class="primary">Create payment request</button>
+    <p class="hint">On the next page tap <b>Simulate payment received</b>. Your vouchers then appear in your wallet.</p>
+    <p id="err" class="err" role="alert"></p>
+  </section>
+
+  <section class="card">
+    <h2>2. Spend one at the shop</h2>
+    <p class="hint">Open <a href="/wallet">your voucher wallet</a>, tap <b>Show code</b>, copy it and paste it here. This box plays the shop's counter.</p>
+    <textarea id="token" rows="3" placeholder="SPV1.…" spellcheck="false" autocomplete="off"></textarea>
+    <button id="redeem" class="primary">Redeem</button>
+    <p id="result" class="hint" role="status"></p>
+    <p class="hint">Try the same code twice: the second time must be refused. The shop can check a voucher is genuine, but cannot tell which purchase it came from.</p>
+  </section>
+
+  <section class="card">
+    <h2>What the shop can see</h2>
+    <p class="hint" id="view">Loading…</p>
+  </section>
+  <p class="center"><a class="hint" href="https://github.com/Just-Anonymously-Known/shieldpay">Source code and honest limits</a></p>
+</main>
+<script src="/demo.js"></script>
+</body>
+</html>

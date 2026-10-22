@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>Pay with Zcash</title>
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="brand"><span class="dot"></span><h1>ShieldPay</h1><p class="sub" id="merchant"></p></header>
+  <section class="card center" id="card">
+    <p class="hint" id="loading">Loading…</p>
+    <div id="content" class="hidden">
+      <p class="amount"><span id="amount"></span> <small>ZEC</small></p>
+      <p class="hint" id="label"></p>
+      <div id="qr" class="qr"></div>
+      <a id="open" class="primary btn" href="#">Open in wallet</a>
+      <button id="copy" class="ghost">Copy payment link</button>
+      <p class="hint">Scan with a Zcash wallet that supports payment links. The order ref <b id="ref"></b> is sent as an encrypted memo. Nobody else can see who paid.</p>
+      <p class="hint" id="timer"></p>
+      <div id="demobox" class="hidden">
+        <p class="hint"><b>Demo mode.</b> Judges and testers: no real payment is needed. This button stands in for the merchant confirming that the ZEC arrived.</p>
+        <button id="sim" class="primary">Simulate payment received</button>
+      </div>
+    </div>
+    <div id="vouchers" class="hidden">
+      <p class="big">🎟</p>
+      <p id="vstatus">Creating your vouchers…</p>
+      <p class="hint" id="vhelp"></p>
+      <a id="vwallet" class="primary btn hidden" href="/wallet">Open my voucher wallet</a>
+    </div>
+    <div id="done" class="hidden"><p class="big" id="doneIcon"></p><p id="doneText"></p></div>
+  </section>
+</main>
+<script src="/blind.js"></script>
+<script src="/store.js"></script>
+<script src="/pay.js"></script>
+</body>
+</html>
