@@ -6,11 +6,17 @@ ShieldPay is an open-source privacy-focused payment prototype exploring how merc
 
 It uses blind-signed digital vouchers to separate voucher issuance from redemption, with voucher verification, expiry controls, and double-spend protection.
 
-## 🌐 Live Links
+## 🌐 Live Application
 
 - **Main application:** https://shieldpay-nine.vercel.app/
 - **Interactive demo:** https://shieldpay-nine.vercel.app/demo
 - **GitHub repository:** https://github.com/Just-Anonymously-Known/shieldpay
+
+## 🎥 Project Demo Video
+
+Watch the ShieldPay walkthrough to see the project and its core workflow.
+
+▶️ **[Watch the ShieldPay Demo on YouTube](https://youtu.be/LIi_NgX0a6I)**
 
 > **Demo notice:** The public demo uses simulated payment confirmation. It demonstrates the voucher workflow but does not confirm receipt of a real Zcash transaction.
 
@@ -61,7 +67,7 @@ During development, the local automated test suites passed **78 checks**:
 | Redis-related checks | 20 passed |
 | **Total** | **78 passed** |
 
-The live simulated demo was also manually tested for the following:
+The live simulated demo was also manually tested for:
 
 - Simulated payment confirmation
 - Voucher issuance
@@ -122,7 +128,7 @@ cd shieldpay
 npm install
 ```
 
-Configure the environment variables required by the application. Refer to [`docs/DEPLOY.md`](docs/DEPLOY.md) for the deployment configuration and storage settings.
+Configure the environment variables required by the application. Refer to [`docs/DEPLOY.md`](docs/DEPLOY.md) for deployment configuration and storage settings.
 
 ### Run tests
 
@@ -138,8 +144,8 @@ Follow the startup instructions and environment-variable requirements in [`docs/
 
 ShieldPay is deployed on Vercel and uses Upstash Redis for hosted storage.
 
-- Main application: https://shieldpay-nine.vercel.app/
-- Interactive demo: https://shieldpay-nine.vercel.app/demo
+- **Main application:** https://shieldpay-nine.vercel.app/
+- **Interactive demo:** https://shieldpay-nine.vercel.app/demo
 
 See [`docs/DEPLOY.md`](docs/DEPLOY.md) for deployment instructions and environment-variable configuration.
 
@@ -173,7 +179,7 @@ See the repository's license file for the applicable terms.
 
 **Godis Akachukwu**
 
-- GitHub: https://github.com/Just-Anonymously-Known
+- **GitHub:** https://github.com/Just-Anonymously-Known
 
 ---
 
