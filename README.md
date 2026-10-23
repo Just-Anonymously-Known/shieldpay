@@ -1,255 +1,180 @@
-# ShieldPay
+# ShieldPay 🔐
 
-**Private Zcash checkout with unlinkable vouchers.**
+### Privacy-Preserving Payments with Anonymous Vouchers
 
-A Zecathon submission for the **Shielded Payments** track.
+ShieldPay is an open-source privacy-focused payment prototype exploring how merchants can accept payments while reducing the linkability between a customer's payment and their later purchase.
 
-Shielded Zcash can protect payment details, but loyalty cards and prepaid passes can reintroduce a link between a purchase and a later redemption. ShieldPay explores a way to break that link using blind signatures.
+It uses blind-signed digital vouchers to separate voucher issuance from redemption, with voucher verification, expiry controls, and double-spend protection.
 
-A customer pays for vouchers, generates voucher secrets in their browser, and requests blind signatures from the merchant. The merchant signs the blinded requests without seeing the underlying voucher secrets. Later, the customer redeems a voucher, and the merchant can verify its signature and check that it has not already been spent without learning which purchase issued it.
+## 🌐 Live Links
 
-**Important:** Checkout confirmation is simulated in the current demo. Real on-chain testnet payment confirmation has not yet been verified.
+- **Main application:** https://shieldpay-nine.vercel.app/
+- **Interactive demo:** https://shieldpay-nine.vercel.app/demo
+- **GitHub repository:** https://github.com/Just-Anonymously-Known/shieldpay
 
-## Project Status
+> **Demo notice:** The public demo uses simulated payment confirmation. It demonstrates the voucher workflow but does not confirm receipt of a real Zcash transaction.
 
-| Component | Status |
-|---|---|
-| Blind-signature voucher issuance | Implemented and covered by automated tests |
-| Voucher verification and redemption | Implemented and manually tested in the browser |
-| Duplicate-redemption prevention | Implemented; repeated redemption was rejected in manual testing |
-| Voucher cooldown and expiry | Implemented and covered by automated tests |
-| Anonymity-set information | Implemented; purchase counts are displayed to communicate privacy limitations |
-| ZIP-321 payment request and QR code | Implemented; scanned with Zkool on testnet, which populated the recipient, amount, and memo |
-| On-chain testnet payment | Not yet verified; Zkool reported an incorrect consensus branch ID when attempting to send |
-| Payment confirmation | Simulated in the demo; merchant confirmation is manual in the normal checkout flow |
-| External cryptographic security audit | Not performed |
+## 💡 The Problem
 
-## Why ShieldPay?
+Digital payment systems can expose information that makes it possible to associate a customer's payment with a later purchase. ShieldPay explores a different approach: a merchant issues a cryptographically signed voucher that can be redeemed later without necessarily linking the redemption to the original payment.
 
-A payment system should not automatically make every later interaction linkable to the original purchase.
+The goal is to explore practical privacy-preserving payment workflows while maintaining voucher validity checks and protection against repeated redemption.
 
-ShieldPay separates the payment and redemption stages:
+## 🚀 How It Works
 
-- The merchant handles the original payment and order.
-- The customer’s browser generates and retains voucher secrets.
-- The merchant signs blinded voucher requests without seeing the underlying secrets.
-- During redemption, the merchant verifies the voucher and checks for reuse without receiving the original purchase identifier from the voucher itself.
+1. **Checkout:** A customer initiates a payment request through the merchant interface.
+2. **Payment confirmation:** The merchant's payment workflow authorizes voucher issuance. This step is simulated in the public demo.
+3. **Voucher issuance:** ShieldPay issues a voucher using a blind-signature mechanism.
+4. **Wallet storage:** The voucher is stored in the browser-based demo wallet.
+5. **Redemption:** The merchant verifies the voucher's signature and validity.
+6. **Double-spend prevention:** Once redeemed, the voucher cannot be successfully redeemed again.
+7. **Privacy controls:** Expiry and configurable cooldown rules are intended to reduce linkability through timing.
 
-The goal is to reduce the digital link between a purchase and a later redemption, while being transparent about the limitations of anonymity.
+## ✨ Features
 
-## How It Works
+- **Blind-signature vouchers:** Uses a Chaum-style RSA blind-signature approach to explore separating issuance from redemption.
+- **Voucher verification:** Checks voucher authenticity and validity before acceptance.
+- **Double-spend protection:** Rejects attempts to redeem an already-used voucher.
+- **Browser-based demo wallet:** Stores demo vouchers in the browser for the demonstration workflow.
+- **Expiry and cooldown controls:** Configurable rules govern voucher validity and redemption timing.
+- **Redis-backed state:** Uses Redis-compatible storage for persistent application state and redemption tracking.
+- **Interactive simulated demo:** Lets users explore checkout, voucher issuance, and redemption without a real payment.
+- **Open-source code:** The implementation is available for inspection and further development.
 
-### 1. Create a payment request
+## 🛠️ Technology Stack
 
-The merchant creates an order. ShieldPay generates a ZIP-321-compatible payment request with a QR code and payment link, including an order reference in the memo.
+- **Runtime:** Node.js
+- **Frontend:** HTML, CSS, and JavaScript
+- **Backend:** Node.js application and API routes
+- **Cryptography:** RSA blind signatures using a full-domain hash approach
+- **Storage:** Upstash Redis
+- **Deployment:** Vercel
+- **Testing:** Automated core-application and Redis-related test suites
 
-### 2. Issue vouchers
+## 🧪 Testing and Verification
 
-After payment is confirmed, the customer’s browser creates voucher secrets and blinds them before requesting signatures from the merchant. The browser unblinds the returned signatures and stores the vouchers in a local wallet.
+During development, the local automated test suites passed **78 checks**:
 
-In the current public demo, the payment confirmation step is simulated. The subsequent voucher workflow uses the application’s implemented code.
+| Test suite | Result |
+|---|---:|
+| Core application checks | 58 passed |
+| Redis-related checks | 20 passed |
+| **Total** | **78 passed** |
 
-### 3. Redeem a voucher
+The live simulated demo was also manually tested for the following:
 
-The customer presents a voucher code or QR code. ShieldPay verifies the signature, checks the voucher’s validity, and rejects a voucher that has already been spent.
+- Simulated payment confirmation
+- Voucher issuance
+- Voucher storage in the browser wallet
+- Successful first redemption
+- Rejection of a second redemption attempt using the same voucher
 
-### 4. Prevent duplicate spending
+These results describe the tests performed. They are not a formal security audit or proof that every production scenario has been covered.
 
-ShieldPay records spent-secret hashes so that a voucher cannot be redeemed repeatedly.
+## 🔗 Zcash Testnet Integration Status
 
-## Privacy Design
+ShieldPay's main application was tested with **Zkool**, a Zcash wallet, to evaluate its payment-request flow.
 
-| Risk | Design approach |
-|---|---|
-| Linking a redemption to a specific purchase | Blind signatures separate voucher issuance from redemption |
-| Immediate purchase-to-redemption timing correlation | A configurable cooldown, one day by default |
-| Repeated use of the same voucher | Spent-secret tracking and duplicate-redemption rejection |
-| Small anonymity sets | Purchase counts are displayed so users can understand the available crowd size |
-| Merchant-issued keys used to tag customers | The wallet displays a signing-key fingerprint for consistency checks |
-| Long-term voucher reuse | Voucher expiry, 30 days by default |
+### What worked
 
-### Important Privacy Limitations
+- Zkool successfully recognized and read the ShieldPay payment request.
+- The wallet populated the recipient address, requested amount, and memo from the payment request.
 
-ShieldPay reduces the link between a purchase and voucher redemption; it does not make every part of a transaction anonymous.
+### What remains unresolved
 
-- The merchant sees the original order and incoming payment.
-- Small purchase volumes can make a redemption easier to guess. A displayed count is not a guarantee of strong anonymity.
-- Physical, in-person redemption can reveal the customer’s identity.
-- Network observers and hosting providers may observe request timing and metadata.
-- Clearing browser data without a backup can permanently lose locally stored vouchers.
-- A zero-day cooldown is provided for demonstrations only. It makes purchase-to-redemption timing more linkable.
-- The cryptographic implementation has not received an independent security audit.
+- The attempted transaction did not complete successfully.
+- During testing, the wallet returned an **incorrect consensus branch ID** error.
+- Successful transaction broadcast, receipt, and confirmation have not yet been verified.
 
-## Cryptography
+This test demonstrates that the wallet could interpret the payment request. It does **not** establish that ShieldPay successfully completed a real Zcash payment.
 
-ShieldPay implements Chaum RSA blind signatures using a 2048-bit RSA construction with a full-domain hash in `lib/blind.js`. The implementation is shared between the browser and Node.js.
+The public demo therefore uses simulated payment confirmation while the testnet transaction issue remains under investigation.
 
-This is a classic blind-signature construction, **not RFC 9474**. The implementation should be treated as experimental until it has undergone independent cryptographic review.
+## 🔒 Security and Privacy Considerations
 
-## Technology and Architecture
+ShieldPay is an experimental prototype. Its cryptographic design and privacy properties require further independent review before any real-funds or sensitive-transaction use.
 
-- **Node.js:** HTTP server and API
-- **Browser JavaScript:** voucher generation, blinding, unblinding, and local wallet
-- **RSA blind signatures:** voucher issuance without exposing voucher secrets to the signer
-- **ZIP-321:** Zcash payment request URIs
-- **QR codes:** in-repository QR encoder
-- **Storage:** local file storage and Redis-backed storage
-- **Tests:** main application checks, fake-Redis checks, and duplicate-spend race tests
+Important limitations:
 
-## Getting Started
+- The implementation has not undergone an independent security audit.
+- The RSA blind-signature approach is not claimed to be compliant with RFC 9474.
+- Timing, voucher metadata, merchant behavior, browser state, network information, and operational logs may still create privacy risks.
+- Double-spend protection depends on correct server-side storage and application behavior.
+- Real Zcash testnet payment confirmation remains unverified.
+- The public demo's zero-day cooldown is a testing convenience that weakens timing-based privacy protection. It should remain limited to simulated demo use; real-use configurations should retain an appropriate cooldown.
+- Administrative credentials, private signing material, and environment secrets must never be committed to source control or exposed publicly.
+
+ShieldPay demonstrates privacy-preserving payment concepts; it does not guarantee complete anonymity.
+
+## ⚙️ Run Locally
 
 ### Requirements
 
-- Node.js 18 or newer
-- A valid shielded or unified Zcash receiving address
-- Git Bash, Bash, or another compatible shell for the environment-variable examples below
+- Node.js 18 or later
+- npm
+- A Redis-compatible backend for testing persistent-storage functionality
 
-The project currently has no external npm dependencies required by its existing test and start scripts.
+### Installation
 
-### 1. Configure environment variables
-
-In your terminal, from the project directory, set the required values:
-
-```sh
-export SHIELDPAY_ADDRESS="YOUR_VALID_SHIELDED_ZCASH_ADDRESS"
-export SHIELDPAY_ADMIN_TOKEN="YOUR_LONG_RANDOM_ADMIN_TOKEN"
-export SHIELDPAY_KEY_SECRET="YOUR_LONG_RANDOM_ENCRYPTION_SECRET"
-
-export SHIELDPAY_NAME="My Shop"
-export SHIELDPAY_VOUCHER_NAME="meal"
-export SHIELDPAY_VOUCHER_PRICE="0.01"
+```bash
+git clone https://github.com/Just-Anonymously-Known/shieldpay.git
+cd shieldpay
+npm install
 ```
 
-Use a valid address for the network you intend to test. Use a testnet address for testnet experiments. Do not publish your admin token, encryption secret, or private keys.
+Configure the environment variables required by the application. Refer to [`docs/DEPLOY.md`](docs/DEPLOY.md) for the deployment configuration and storage settings.
 
-The application validates the receiving address and requires an admin token of at least 12 characters. Use securely generated secrets rather than the example strings above.
+### Run tests
 
-### 2. Start ShieldPay
-
-```sh
-npm start
-```
-
-By default, the server listens on:
-
-`http://localhost:3000`
-
-### 3. Run the automated tests
-
-Open a separate terminal in the project directory and run:
-
-```sh
+```bash
 npm test
 ```
 
-The test command runs:
+### Start the application
 
-- `test/run.js`
-- `test/redis.test.js`
+Follow the startup instructions and environment-variable requirements in [`docs/DEPLOY.md`](docs/DEPLOY.md). Enable demo mode only when running a simulated demonstration.
 
-**Latest recorded local result:**
+## ☁️ Deployment
 
-- Main test suite: 58 checks passed
-- Redis test suite: 20 checks passed
-- **Total: 78 automated checks passed**
+ShieldPay is deployed on Vercel and uses Upstash Redis for hosted storage.
 
-These results reflect the latest local run and are not an independent security audit.
+- Main application: https://shieldpay-nine.vercel.app/
+- Interactive demo: https://shieldpay-nine.vercel.app/demo
 
-## Demo Mode
+See [`docs/DEPLOY.md`](docs/DEPLOY.md) for deployment instructions and environment-variable configuration.
 
-The public demo route is disabled by default. To enable it locally:
+**Secret management:** Keep `SHIELDPAY_KEY_SECRET` stable after deployment. Changing it may make previously stored signing-key material inaccessible. Store secrets in the hosting provider's environment-variable settings, not in source control.
 
-```sh
-SHIELDPAY_DEMO=1 npm start
-```
+## 🗺️ Roadmap
 
-Open:
+- Resolve the Zcash testnet transaction error and verify successful payment confirmation.
+- Improve payment-status handling and reconciliation.
+- Expand automated integration and deployment tests.
+- Obtain independent cryptographic and application security reviews.
+- Improve the merchant experience and integration workflow.
+- Evaluate stronger protections against timing and metadata correlation.
 
-`http://localhost:3000/demo`
+## 🤝 Contributing
 
-The demo includes a simulated payment-confirmation action so visitors can explore voucher issuance and redemption without broadcasting a real payment.
+Contributions, bug reports, testing, and feedback are welcome.
 
-For a local demo that allows same-day redemption:
+1. Fork the repository.
+2. Create a feature branch.
+3. Make your changes and add relevant tests.
+4. Open a pull request explaining the changes and test results.
 
-```sh
-SHIELDPAY_DEMO=1 SHIELDPAY_COOLDOWN_DAYS=0 npm start
-```
+Never commit private keys, administrative tokens, credentials, or other secrets.
 
-**Use the zero-day cooldown for demonstrations only.** It weakens timing privacy by allowing a voucher to be bought and redeemed on the same day.
+## 📄 License
 
-When recording or presenting the demo, disclose that payment confirmation is simulated. Do not present a simulated confirmation as evidence of an on-chain transaction.
+See the repository's license file for the applicable terms.
 
-## Manual Demo Evidence
+## 👨‍💻 Author
 
-Screenshots from local browser testing are intended to be stored in:
+**Godis Akachukwu**
 
-[`evidence/simulated-checkout/`](evidence/simulated-checkout/)
+- GitHub: https://github.com/Just-Anonymously-Known
 
-Suggested evidence:
+---
 
-- Voucher issuance after simulated checkout
-- Successful first redemption
-- Rejection of a repeated redemption attempt
-
-These screenshots document the simulated-checkout workflow. They do not establish that a real Zcash payment was broadcast or confirmed. Redact voucher codes and other sensitive test data before publishing screenshots in a public repository.
-
-## Testnet Payment Limitation
-
-ShieldPay generates a payment request QR code and link. During testing, Zkool populated the intended testnet recipient, amount, and memo from the request.
-
-However, an attempted testnet transaction failed with an **incorrect consensus branch ID** error. The exact cause has not been confirmed. A wallet, light-node service, or network-upgrade compatibility issue is possible, but this remains unresolved.
-
-The current demo therefore uses simulated payment confirmation. Real on-chain testnet payment confirmation must be verified before the project can claim a successful end-to-end Zcash payment.
-
-## Application Routes
-
-| Route | Purpose |
-|---|---|
-| `/` | Merchant dashboard and order management |
-| `/demo` | Public demo page, enabled only with `SHIELDPAY_DEMO=1` |
-| `/wallet` | Customer voucher wallet stored in the browser |
-| `/pay/:id` | Payment-request page for an order |
-
-## Configuration Reference
-
-| Variable | Purpose | Default |
-|---|---|---|
-| `SHIELDPAY_ADDRESS` | Shielded or unified receiving address | Required |
-| `SHIELDPAY_ADMIN_TOKEN` | Protects administrative actions | Required |
-| `SHIELDPAY_KEY_SECRET` | Protects stored signing keys | Required for the configured key-protection flow |
-| `SHIELDPAY_NAME` | Merchant display name | Application default |
-| `SHIELDPAY_VOUCHER_NAME` | Voucher description | Application default |
-| `SHIELDPAY_VOUCHER_PRICE` | Price per voucher in ZEC | Application default |
-| `SHIELDPAY_DEMO` | Enables the public demo route when set to `1` | Disabled |
-| `SHIELDPAY_COOLDOWN_DAYS` | Delay before a voucher can be redeemed | `1` |
-| `SHIELDPAY_VALID_DAYS` | Voucher validity period | `30` |
-
-For deployment-specific configuration, consult [`docs/DEPLOY.md`](docs/DEPLOY.md). For test instructions, consult [`docs/TESTING.md`](docs/TESTING.md).
-
-## Current Limitations
-
-- Payment confirmation is manual in the normal checkout flow; automatic payment watching is not yet implemented.
-- The public demo simulates payment confirmation.
-- A successful on-chain testnet payment has not yet been verified.
-- The project has not undergone an external cryptographic security audit.
-- Vouchers are stored in the customer's browser, so losing browser data can result in losing access to vouchers.
-- A single merchant is supported per deployment.
-- Privacy depends on the size of the anonymity set, cooldown settings, user behavior, and network metadata.
-
-## Project Layout
-
-- `server.js` — HTTP server, request handling, and API
-- `api/index.js` and `vercel.json` — Vercel entry point and routing configuration
-- `lib/blind.js` — browser/Node blind-signature implementation
-- `lib/vouchers.js` — voucher issuance, keys, expiry, cooldown, and double-spend prevention
-- `lib/storage.js` — file and Redis-backed storage
-- `lib/zip321.js` — payment request URI handling
-- `lib/qr.js` — QR-code encoder
-- `web/` — merchant, payment, demo, and wallet pages
-- `test/` — automated tests, including fake-Redis and double-spend race tests
-- `docs/` — testing and deployment documentation
-- `evidence/simulated-checkout/` — screenshots from manual simulated-checkout testing
-
-## License
-
-MIT. See [`LICENSE`](LICENSE).
+*ShieldPay is an experimental privacy-preserving payment prototype intended for research, demonstration, and further development. It is not a production-ready payment processor and does not guarantee complete anonymity or privacy.*
