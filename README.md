@@ -16,7 +16,7 @@ It uses blind-signed digital vouchers to separate voucher issuance from redempti
 
 Watch the ShieldPay walkthrough to see the project and its core workflow.
 
-▶️ **[Watch the ShieldPay Demo on YouTube](https://youtu.be/LIi_NgX0a6I)**
+▶️ **[Watch the ShieldPay Demo on YouTube](https://youtu.be/DoOlwEaH3c8)**
 
 > **Demo notice:** The public demo uses simulated payment confirmation. It demonstrates the voucher workflow but does not confirm receipt of a real Zcash transaction.
 
